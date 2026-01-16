@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h4 class="mb-4"><i class="fas fa-archive me-2"></i>Colaboradores Arquivados</h4>
+    <a href="/" class="btn btn-outline-secondary mb-3"><i class="fas fa-arrow-left"></i> Voltar</a>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in colaboradores %}
+                    <tr>
+                        <td>{{ c.nome }}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm" onclick="restaurar('{{ c.id }}')">
+                                <i class="fas fa-trash-restore me-2"></i>Restaurar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function restaurar(id) {
+    fetch('/api/restaurar_colaborador/' + id, { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+        if(d.success) {
+            Swal.fire('Restaurado!', 'O colaborador voltou para a lista.', 'success').then(() => location.reload());
+        }
+    });
+}
+</script>
+{% endblock %}

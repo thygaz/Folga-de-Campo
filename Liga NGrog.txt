@@ -1,0 +1,4 @@
+ngrok.exe http 5000
+
+
+(phyton tem que estar rodando)

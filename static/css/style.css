@@ -1,0 +1,55 @@
+/* --- 1. DATAS LEGÍVEIS (SEM SUBLINHADO AZUL) --- */
+.fc-daygrid-day-number {
+    color: #2c3e50 !important;   /* Cinza escuro profissional */
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important; /* Remove sublinhado */
+    padding: 8px !important;
+    opacity: 0.8;
+}
+
+/* Remove fundo amarelo padrão do 'hoje' */
+.fc-day-today {
+    background-color: #ffffff !important;
+    border: 2px solid #0d6efd !important;
+}
+
+/* --- 2. CONTADOR DE DIAS (1, 2, 3...) DENTRO DA CÉLULA --- */
+.contador-dia {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50; /* Fica acima de tudo */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.contador-trabalho {
+    background-color: #ffffff;
+    color: #198754;
+    border: 2px solid #198754;
+}
+
+.contador-folga {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: 1px solid #0a58ca;
+}
+
+/* --- 3. ESTILO DO ARRASTAR (DRAGGABLE) --- */
+.fc-event-dragging {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Cursor de redimensionar */
+.fc-event-resizer {
+    cursor: col-resize;
+}
