@@ -53,3 +53,8 @@
 .fc-event-resizer {
     cursor: col-resize;
 }
+
+/* --- CORREÇÃO DE LAYOUT DA TIMELINE --- */
+.fc-event-main-frame {
+    display: block !important; /* Remove flexbox padrão do fullcalendar que atrapalha o grid */
+}
