@@ -1,104 +1,51 @@
 {% extends "base.html" %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_index.css') }}">
+{% endblock %}
+
 {% block content %}
-<style>
-    /* MODO TELA CHEIA: Layout seguro e corrigido */
-    .modo-cheia-layout {
-        position: fixed !important; top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        z-index: 9999; background-color: white; padding: 15px;
-        margin: 0 !important;
-        /* CRUCIAL PARA CORRIGIR O CABEÇALHO: Bloqueia a rolagem da PÁGINA */
-        overflow: hidden !important; 
-    }
-
-    /* Estilos FullCalendar */
-    .fc-timeline-slot-cushion { display: flex !important; flex-direction: column; align-items: center; justify-content: center; text-decoration: none !important; padding: 8px 0 !important; height: 100%; }
-    .header-dia { font-size: 1.6rem; font-weight: 800; color: #2c3e50; line-height: 1; }
-    .header-sem { font-size: 0.75rem; text-transform: uppercase; color: #7f8c8d; font-weight: 700; }
-    
-    .fc-resource-area-col-cell { vertical-align: middle !important; background-color: #f8f9fa; }
-    .fc-timeline-body tr:nth-child(even) .fc-timeline-lane { background-color: #fcfcfc; }
-    .fc-timeline-event { border-radius: 4px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; border: none !important; margin-top: 4px !important; padding: 0 !important; }
-    
-    .day-badge { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; margin: 0 auto; font-size: 0.65rem; font-weight: bold; cursor: help; }
-    .evento-folga .day-badge { background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.5); }
-    .evento-trabalho .day-badge { background: white; color: #555; border: 1px solid #ddd; }
-    .evento-trabalho.text-danger .day-badge { background: #c62828; color: white; border: none; }
-    .contador-dia { position: absolute; bottom: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .contador-trabalho { background-color: white; color: #198754; border: 2px solid #198754; }
-    .contador-folga { background-color: #0d6efd; color: #ffffff; border: 1px solid #0a58ca; }
-    .fc-dayGridMonth-view .fc-daygrid-event { min-height: 28px !important; margin-top: 2px !important; border-radius: 4px; border: none !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center; }
-    .fc-dayGridMonth-view .fc-event-title { font-size: 0.75rem !important; font-weight: 700 !important; }
-    .fc-dayGridMonth-view .fc-event { color: #fff !important; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-</style>
-
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <button class="btn btn-light border shadow-sm me-1" onclick="executarUndo()" title="Desfazer (Ctrl+Z)"><i class="fas fa-undo-alt"></i></button>
-        <button class="btn btn-light border shadow-sm" onclick="executarRedo()" title="Refazer (Ctrl+Y)"><i class="fas fa-redo-alt"></i></button>
-    </div>
+    <div></div>
     <div class="d-flex align-items-center">
-        <div class="text-muted small me-3"><i class="fas fa-info-circle me-1"></i> Verde: Realizado | Azul: Futuro</div>
         <a href="/arquivados" class="btn btn-outline-secondary btn-sm"><i class="fas fa-archive me-1"></i> Lixeira</a>
     </div>
 </div>
 
-<div class="row g-3" id="containerPrincipal">
-    
-    <div class="col-md-3" id="sidebar-equipe">
+<div class="row g-3">
+    <div class="col-md-3">
         <div class="card shadow-sm h-100 card-colaboradores border-0">
-            <div class="card-header bg-white fw-bold border-bottom">
-                <i class="fas fa-users me-2"></i>Equipe
-                <button class="btn btn-sm btn-light float-end" data-bs-toggle="modal" data-bs-target="#modalColab">+</button>
+            <div class="card-header bg-white fw-bold border-bottom d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-users me-2"></i>Equipe</span>
+                <button class="btn btn-sm btn-primary py-0" data-bs-toggle="modal" data-bs-target="#modalColab" title="Novo Colaborador">+</button>
             </div>
             
-            <div id="external-events" class="list-group list-group-flush overflow-auto" style="max-height: 80vh;">
-                <div class="p-2 bg-light small text-center text-muted border-bottom">
-                    <i class="fas fa-hand-pointer me-1"></i> Arraste o nome para criar folga
-                </div>
-                <a href="#" class="list-group-item list-group-item-action active" id="btnVerTodos" onclick="filtrarColaborador('')">
-                    <strong>Ver Todos</strong>
-                </a>
+            <div id="external-events" class="list-group list-group-flush">
+                <div class="p-2 bg-light small text-center text-muted border-bottom"><i class="fas fa-hand-pointer me-1"></i> Arraste para o calendário</div>
+                <a href="#" class="list-group-item list-group-item-action active" onclick="filtrarColaborador('')"><strong>Ver Todos</strong></a>
                 {% for d in dados %}
-                <div class="list-group-item list-group-item-action fc-event-draggable group-item-hover" 
-                     data-id="{{ d.id }}" data-title="{{ d.nome }}" style="cursor: grab;"> 
+                <div class="list-group-item list-group-item-action fc-event-draggable" data-id="{{ d.id }}" data-title="{{ d.nome }}"> 
                     <div class="d-flex w-100 justify-content-between align-items-center">
                         <div onclick="filtrarColaborador('{{ d.id }}', this.parentElement.parentElement)" style="flex-grow: 1;">
-                            <span class="fw-bold d-block text-truncate" style="max-width: 140px;">{{ d.nome }}</span>
+                            <span class="fw-bold d-block text-truncate">{{ d.nome }}</span>
                             <small class="text-muted">{{ d.dias }}d trab.</small>
                         </div>
                         <button class="btn btn-link text-danger p-0 ms-2 opacity-50 hover-opacity-100" onclick="arquivarColaborador('{{ d.id }}', '{{ d.nome }}')"><i class="fas fa-trash-alt"></i></button>
                     </div>
-                    <div class="mt-1"><span class="badge {{ d.classe }} w-100 py-1" style="font-size: 0.7rem;">{{ d.status }}</span></div>
+                    <div class="mt-1"><span class="badge {{ d.classe }} w-100 py-1">{{ d.status }}</span></div>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 
-    <div class="col-md-9" id="calendar-col">
-        <div class="card shadow-sm card-calendario border-0 h-100">
+    <div class="col-md-9">
+        <div class="card shadow-sm border-0 h-100 card-calendario">
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold text-dark mb-0">Visão Geral</h4>
                     <div>
-                        <h4 class="fw-bold text-dark mb-0" id="tituloCalendario">Visão Geral</h4>
-                        <small class="text-muted">Gerenciamento de Escala</small>
-                    </div>
-                    <div class="bg-light p-2 rounded d-flex gap-3 align-items-center border">
-                        <span class="fw-bold small text-muted text-uppercase me-2"><i class="fas fa-filter"></i> Mostrar:</span>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="checkFolgas" checked onchange="calendar.refetchEvents()">
-                            <label class="form-check-label small fw-bold text-primary" for="checkFolgas">Folgas</label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="checkTrabalho" checked onchange="calendar.refetchEvents()">
-                            <label class="form-check-label small fw-bold text-success" for="checkTrabalho">Trabalho (60d)</label>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn btn-outline-dark me-2 btn-expandir" onclick="alternarTelaCheia()" title="Maximizar e ver Timeline"><i class="fas fa-expand-arrows-alt me-1"></i> Expandir</button>
-                        <button class="btn btn-danger me-2 btn-fechar-cheia" onclick="alternarTelaCheia()" title="Voltar ao Normal"><i class="fas fa-compress-arrows-alt me-1"></i> Voltar</button>
+                        <a href="/timeline" class="btn btn-outline-dark me-2"><i class="fas fa-expand-arrows-alt me-1"></i> Timeline (Tela Cheia)</a>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalFolga"><i class="fas fa-plus-circle me-2"></i>Lançar</button>
                     </div>
                 </div>
@@ -127,8 +74,7 @@
             <div class="modal-header"><h5 class="modal-title">Lançar Folga Manual</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="formFolga">
-                    <div class="mb-3">
-                        <label>Colaborador</label>
+                    <div class="mb-3"><label>Colaborador</label>
                         <select class="form-select" id="colaboradorSelect" required>
                             <option value="">Selecione...</option>
                             {% for c in colaboradores %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
@@ -156,5 +102,5 @@
     const API_EVENTOS = "{{ url_for('get_eventos') }}";
     const API_RECURSOS = "{{ url_for('get_recursos') }}";
 </script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script_index.js') }}"></script>
 {% endblock %}

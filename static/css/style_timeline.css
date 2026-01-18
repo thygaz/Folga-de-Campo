@@ -1,0 +1,102 @@
+/* style_timeline.css */
+
+/* --- AJUSTES GERAIS --- */
+.container, .container-fluid {
+    max-width: 100% !important;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* --- FULLCALENDAR OVERRIDES --- */
+.fc-timeline-event { 
+    background: transparent !important; 
+    border: none !important; 
+    box-shadow: none !important;
+    margin: 1px 0 !important;
+}
+
+.fc-timeline-event .fc-event-main {
+    padding: 0 !important; margin: 0 !important; 
+    width: 100%; height: 100%; overflow: hidden;
+}
+
+.fc-resource-area-col-cell { 
+    vertical-align: middle !important; 
+    background-color: #f8f9fa; color: #495057;
+}
+
+/* --- ESTRUTURA DE TABELA (Garante o alinhamento "grudado") --- */
+.event-days-table {
+    display: table;
+    width: 100%;
+    height: 100%;
+    table-layout: fixed; /* Força cada dia a ter exatamente a mesma largura */
+    border-collapse: collapse;
+}
+
+.day-cell { 
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.6rem; 
+    font-weight: 700; 
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+    position: relative;
+    cursor: pointer;
+}
+
+/* --- ESTILOS VISUAIS (FOLGA) --- */
+.event-days-table.evento-folga { 
+    background-color: #0d6efd; 
+    border-radius: 4px; 
+}
+.evento-folga .day-cell { 
+    color: rgba(255,255,255,0.9); 
+    /* Linha divisória BRANCA visível */
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.3); 
+}
+.evento-folga .day-cell:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* --- ESTILOS VISUAIS (TRABALHO) --- */
+/* AQUI ESTÁ A CORREÇÃO: Linhas cinzas visíveis */
+.event-days-table.evento-trabalho { 
+    background-color: #f8f9fa; 
+    border: 1px solid #ced4da; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+
+.evento-trabalho .day-cell { 
+    color: #495057; 
+    /* Linha divisória CINZA visível (separado por data) */
+    box-shadow: inset -1px 0 0 #ced4da; 
+}
+
+.evento-trabalho .day-cell:hover {
+    background-color: #e2e6ea; /* Efeito hover para destacar o dia */
+}
+
+/* --- ALERTA (>60 dias) --- */
+.event-days-table.evento-trabalho.alerta { 
+    background-color: #fff5f5; 
+    border-color: #ffc9c9; 
+}
+.evento-trabalho.alerta .day-cell { 
+    color: #c92a2a; 
+    /* Linha divisória VERMELHA visível */
+    box-shadow: inset -1px 0 0 #ffc9c9; 
+}
+
+/* Modais */
+.modal-backdrop { z-index: 1040 !important; }
+.modal { z-index: 1050 !important; }
